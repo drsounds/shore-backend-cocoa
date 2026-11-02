@@ -1,0 +1,17 @@
+name: build
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: drsounds/shore
+          path: shore-core
+      - run: cmake -S shore-core -B shore-core/build -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/shore-core"
+      - run: cmake --build shore-core/build --parallel && cmake --install shore-core/build
+      - run: cmake -S . -B build -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/shore-core"
+      - run: cmake --build build --parallel
